@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: api
+  cloud:
+    gateway:
+     # add microservice routes here
+      routes:
+      - id: users
+        uri: lb://users
+        predicates:
+        - Path=/users/**
+      - id: languages
+        uri: lb://languages
+        predicates:
+        - Path=/languages/**
+       # testing node microservices
+      - id: node-service
+        uri: lb://node-service
+        predicates:
+        - Path=/node-service/**
+server: 
+  port: 8765
+
+eureka:
+  client:
+    service-url:
+      default-zone: http://localhost:8761/eureka
+  instance:
+    hostname: localhost
