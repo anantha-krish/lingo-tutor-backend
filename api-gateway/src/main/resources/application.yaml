@@ -13,6 +13,10 @@ spring:
         uri: lb://languages
         predicates:
         - Path=/languages/**
+      - id: quizzes
+        uri: lb://quizzes
+        predicates:
+        - Path=/quizzes/**
        # testing node microservices
       - id: node-service
         uri: lb://node-service
