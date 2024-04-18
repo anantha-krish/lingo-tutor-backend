@@ -1,17 +1,17 @@
 INSERT INTO language (id,name)
-VALUES (1001L, 'French');
+VALUES (1001, 'French');
 
 INSERT INTO section (id,language_id,name)
-VALUES (2001L,1001L, 'Good Morning');
+VALUES (2001,1001, 'Good Morning');
 
 INSERT INTO section (id,language_id,name)
-VALUES (2002L,1001L, 'Introduce yourself');
+VALUES (2002,1001, 'Introduce yourself');
 
 INSERT INTO article (id,section_id,description,media_link,media_type,short_description,title)
-VALUES (3001L,2001L,'lorem ipsemalkdkslaasd',' ','text','lorem ipsim...', 'First Lesson');
+VALUES (3001,2001,'lorem ipsemalkdkslaasd',' ','text','lorem ipsim...', 'First Lesson');
 INSERT INTO article (id,section_id,description,media_link,media_type,short_description,title)
-VALUES (3002L,2001L,'lorem ipsemalkdkslaasd',' ','text','lorem ipsim...', 'Second Lesson');
+VALUES (3001,2001,'lorem ipsemalkdkslaasd',' ','text','lorem ipsim...', 'Second Lesson');
 
 
 INSERT INTO article (id,section_id,description,media_link,media_type,short_description,title)
-VALUES (3003L,2002L,'lorem ipsemalkdkslaasd','https://www.youtube.com/watch?v=5c5P8YQeymI ','video','lorem ipsim...', 'Second Lesson');
+VALUES (3003,2002,'lorem ipsemalkdkslaasd','https://www.youtube.com/watch?v=5c5P8YQeymI ','video','lorem ipsim...', 'Second Lesson');
