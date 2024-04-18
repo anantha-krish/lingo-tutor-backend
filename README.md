@@ -14,3 +14,6 @@ Urls
 http://localhost:8765/users
 http://localhost:8765/languages
 http://localhost:8765/quizzes
+
+Used
+https://supabase.com/ for postgres db
