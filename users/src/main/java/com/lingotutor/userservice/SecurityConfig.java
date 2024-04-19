@@ -10,10 +10,12 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -37,18 +39,14 @@ public class SecurityConfig {
 						.frameOptions(frameOptions -> frameOptions.sameOrigin()))
 				.authorizeHttpRequests(requests -> requests
                         .requestMatchers("/auth/welcome", "/auth/register", "/auth/generateToken", "/h2-console/**").permitAll())
-						.build();
-				
-	/*	return http.csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/auth/welcome", "/auth/register", "/auth/generateToken","/h2-console").permitAll())
                 .authorizeHttpRequests(requests -> requests.requestMatchers("/auth/user/**").authenticated())
                 .authorizeHttpRequests(requests -> requests.requestMatchers("/auth/admin/**").authenticated())
                 .sessionManagement(management -> management
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
-                .build(); */
+				.build();
+				
 	}
 
 	// Password Encoding
