@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: api-gateway-v2
+  cloud:
+    gateway:
+     # add microservice routes here
+      routes:
+      - id: users-v2
+        uri: lb://users
+        predicates:
+        - Path=/users/**
+      - id: languages
+        uri: lb://languages
+        predicates:
+        - Path=/languages/**
+      - id: quizzes
+        uri: lb://quizzes
+        predicates:
+        - Path=/quizzes/**
+       # testing node microservices
+      - id: node-service
+        uri: lb://node-service
+        predicates:
+        - Path=/node-service/**
+server: 
+  port: 8766
+
+eureka:
+  client:
+    service-url:
+      default-zone: http://localhost:8761/eureka
+  instance:
+    hostname: localhost
