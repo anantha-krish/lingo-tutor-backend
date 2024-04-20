@@ -1,4 +1,4 @@
-package com.lingotutor.userservice;
+package com.lingotutor.userservice.service;
 import io.jsonwebtoken.Claims; 
 import io.jsonwebtoken.Jwts; 
 import io.jsonwebtoken.SignatureAlgorithm; 
@@ -16,7 +16,10 @@ import java.util.function.Function;
 @Component
 public class JwtService { 
 
-	public static final String SECRET = "5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437"; 
+	/* Use below same secret to validate token in API gateway or service*/
+	public static final String SECRET = "E04693C65EFB3E1D475B32FBB07A310316011017D16925A8C5479C76C8C2291E"; 
+
+	
 	public String generateToken(String userName) { 
 		Map<String, Object> claims = new HashMap<>(); 
 		return createToken(claims, userName); 
@@ -58,14 +61,14 @@ public class JwtService {
 				.getBody(); 
 	} 
 
+	/* uncomment if needed
 	private Boolean isTokenExpired(String token) { 
 		return extractExpiration(token).before(new Date()); 
 	} 
+	*/
 
-	public Boolean validateToken(String token, UserDetails userDetails) { 
-		final String username = extractUsername(token); 
-		return (username.equals(userDetails.getUsername()) && !isTokenExpired(token)); 
-	} 
-
+    public void validateToken(final String token) {
+        Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token);
+    }
 
 } 

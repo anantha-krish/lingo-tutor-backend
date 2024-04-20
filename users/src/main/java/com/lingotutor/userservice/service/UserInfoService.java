@@ -1,4 +1,4 @@
-package com.lingotutor.userservice;
+package com.lingotutor.userservice.service;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,7 +6,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service; 
+import org.springframework.stereotype.Service;
+
+import com.lingotutor.userservice.config.UserInfoDetails;
+import com.lingotutor.userservice.entity.UserInfo;
+import com.lingotutor.userservice.repository.UserInfoRepository; 
 
 @Service
 public class UserInfoService implements UserDetailsService { 
@@ -16,6 +20,10 @@ public class UserInfoService implements UserDetailsService {
 
 	@Autowired
 	private PasswordEncoder encoder; 
+	
+	
+	@Autowired
+	private JwtService jwtService;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException { 
@@ -33,5 +41,12 @@ public class UserInfoService implements UserDetailsService {
 		return "User Added Successfully"; 
 	} 
 
+    public String generateToken(String username) {
+        return jwtService.generateToken(username);
+    }
+
+    public void validateToken(String token) {
+        jwtService.validateToken(token);
+    }
 
 } 
