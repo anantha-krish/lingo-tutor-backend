@@ -50,7 +50,7 @@ public class LingoAuthFilter extends AbstractGatewayFilterFactory<LingoAuthFilte
 				try {
 					// could you Auth Service, but validating JWT is faster & secure way
 					jwtUtil.validateToken(token);
-					request = request.mutate().header("user-name", jwtUtil.extractUsername(token)).build();
+					request = request.mutate().header("username", jwtUtil.extractUsername(token)).build();
 
 				} catch (Exception e) {
 					System.out.println("invalid access...!");
