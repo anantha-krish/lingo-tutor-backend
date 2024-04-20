@@ -14,48 +14,57 @@ import com.lingotutor.apigateway.util.JwtUtil;
 @Component
 public class LingoAuthFilter extends AbstractGatewayFilterFactory<LingoAuthFilter.Config> {
 
-    @Autowired
-    private RouteValidator validator;
+	@Autowired
+	private RouteValidator validator;
 
-    @Autowired
-    private JwtUtil jwtUtil;
+	@Autowired
+	private JwtUtil jwtUtil;
 
-    public LingoAuthFilter() {
-        super(Config.class);
-    }
+	public LingoAuthFilter() {
+		super(Config.class);
+	}
 
-    @Override
-    public GatewayFilter apply(Config config) {
-        return ((exchange, chain) -> {
-            ServerHttpRequest request = exchange.getRequest();
+	@Override
+	public GatewayFilter apply(Config config) {
+
+		String AUTH_PREFIX = "Bearer ";
+
+		return ((exchange, chain) -> {
+			ServerHttpRequest request = exchange.getRequest();
+
 			boolean isSecuredApiRoute = validator.isSecuredRoute.test(request);
 			HttpHeaders headers = request.getHeaders();
-            //header contains token or not
+			// header contains token or not
 			boolean hasAuthHeader = headers.containsKey(HttpHeaders.AUTHORIZATION);
-			
-			if (isSecuredApiRoute) {  
+
+			if (isSecuredApiRoute) {
 				if (!hasAuthHeader) {
-                    throw new ResponseStatusException(HttpStatus.FORBIDDEN, "missing authorization header");
-                }
+					throw new ResponseStatusException(HttpStatus.FORBIDDEN, "missing authorization header");
+				}
 
-                String authHeader = headers.get(HttpHeaders.AUTHORIZATION).get(0);
-                if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                    authHeader = authHeader.substring(7);
-                }
-                try {
-                	// could you Auth Service, but validating JWT is faster & secure way
-                    jwtUtil.validateToken(authHeader);
+				String token = headers.get(HttpHeaders.AUTHORIZATION).get(0);
 
-                } catch (Exception e) {
-                    System.out.println("invalid access...!");
-                    throw new ResponseStatusException(HttpStatus.FORBIDDEN, "un authorized access to application");       
-                }
-            }
-            return chain.filter(exchange);
-        });
-    }
+				if (token != null && token.startsWith(AUTH_PREFIX)) {
+					token = token.substring(AUTH_PREFIX.length());
+				}
+				try {
+					// could you Auth Service, but validating JWT is faster & secure way
+					jwtUtil.validateToken(token);
+					request = request.mutate().header("user-name", jwtUtil.extractUsername(token)).build();
 
-    public static class Config {
+				} catch (Exception e) {
+					System.out.println("invalid access...!");
+					throw new ResponseStatusException(HttpStatus.FORBIDDEN, "un authorized access to application");
+				}
+			}
 
-    }
+			return chain.filter(exchange.mutate().request(request).build());
+
+		});
+
+	}
+
+	public static class Config {
+
+	}
 }
