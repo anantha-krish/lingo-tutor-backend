@@ -1,4 +1,4 @@
-package com.lingotutor.userservice;
+package com.lingotutor.userservice.dto;
 
 public class AuthRequest { 
 

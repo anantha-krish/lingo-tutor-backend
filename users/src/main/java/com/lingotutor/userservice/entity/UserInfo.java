@@ -1,4 +1,4 @@
-package com.lingotutor.userservice;
+package com.lingotutor.userservice.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
