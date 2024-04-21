@@ -12,7 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.lingotutor.apigateway.util.JwtUtil;
 
 @Component
-public class LingoAuthFilter extends AbstractGatewayFilterFactory<LingoAuthFilter.Config> {
+public class LingoApiAuthFilter extends AbstractGatewayFilterFactory<LingoApiAuthFilter.Config> {
 
 	@Autowired
 	private RouteValidator validator;
@@ -20,7 +20,7 @@ public class LingoAuthFilter extends AbstractGatewayFilterFactory<LingoAuthFilte
 	@Autowired
 	private JwtUtil jwtUtil;
 
-	public LingoAuthFilter() {
+	public LingoApiAuthFilter() {
 		super(Config.class);
 	}
 

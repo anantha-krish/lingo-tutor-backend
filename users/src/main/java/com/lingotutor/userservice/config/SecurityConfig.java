@@ -1,5 +1,6 @@
 package com.lingotutor.userservice.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,18 +15,26 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.lingotutor.userservice.filter.LingoAuthFilter;
 import com.lingotutor.userservice.service.UserInfoService;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
+	
+	@Autowired
+    private LingoAuthFilter authFilter;
+	
+	@Autowired
+	UserInfoService userInfoService;
 
     // User Creation
     @Bean
     UserDetailsService userDetailsService() {
-		return new UserInfoService();
+		return userInfoService;
 	}
 
     // Configuring HttpSecurity
@@ -35,11 +44,16 @@ public class SecurityConfig {
 		return http.csrf(csrf -> csrf.disable())
 				.headers(headers -> headers
 						.frameOptions(frameOptions -> frameOptions.sameOrigin()))
-				.authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/auth/welcome", "/auth/register","/auth/validate/**", "/auth/token", "/h2-console/**").permitAll())
-                .sessionManagement(management -> management
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
+				.authorizeHttpRequests(requests -> requests
+                        .requestMatchers( "/auth/welcome" ,"/auth/register","/auth/validate/**", "/auth/token", "/h2-console/**").permitAll())
+				 .authorizeHttpRequests(auth -> auth.requestMatchers("/admin/**").authenticated())
+				 .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**").authenticated())
+				 .authorizeHttpRequests(auth -> auth.requestMatchers("/user/**").authenticated())
+				.sessionManagement(management -> management
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
+
 				.build();
 			
 	}

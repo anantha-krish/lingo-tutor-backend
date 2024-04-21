@@ -8,7 +8,7 @@ spring:
       - id: users
         uri: lb://users
         predicates:
-        - Path=/auth/**
+        - Path=/auth/**,/admin/**,/users/**
       # No filters       
         
       - id: languages
@@ -16,14 +16,14 @@ spring:
         predicates:
         - Path=/languages/**
         filters:
-        - LingoAuthFilter
+        - LingoApiAuthFilter
 
       - id: quizzes
         uri: lb://quizzes
         predicates:
         - Path=/quizzes/**
         filters:
-        - LingoAuthFilter
+        - LingoApiAuthFilter
                         
        # testing node microservices
       - id: node-service

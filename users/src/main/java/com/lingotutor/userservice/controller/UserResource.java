@@ -6,10 +6,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
+@PreAuthorize("hasAnyAuthority('ROLE_USER')") 
 public class UserResource {
+	
 	@GetMapping("/profile") 
-	@PreAuthorize("hasAuthority('ROLE_USER')") 
 	public String userProfile() { 
 		return "Welcome to User Profile"; 
 	} 
