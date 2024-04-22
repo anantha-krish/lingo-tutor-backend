@@ -10,6 +10,8 @@ spring:
             allowedOrigins: '*'
             allowedMethods: '*'
             allowedHeaders: '*'      
+      default-filters:
+      - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin, RETAIN_FIRST
             
      # add microservice routes here
       routes:

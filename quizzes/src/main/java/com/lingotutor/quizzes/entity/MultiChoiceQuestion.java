@@ -19,7 +19,7 @@ public class MultiChoiceQuestion {
 	@OneToMany(mappedBy = "mcq")
 	private List<Choice> choices;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonIgnore
 	private Quiz quiz;
 

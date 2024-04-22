@@ -2,10 +2,11 @@ package com.lingotutor.quizzes.entity;
 
 import java.util.List;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 
 @Entity
 public class Quiz {
@@ -16,11 +17,14 @@ public class Quiz {
 	
 	private String level;
 	
-	@OneToMany(mappedBy = "quiz")
+	@OneToMany(mappedBy = "quiz",fetch = FetchType.LAZY)
 	private List<MultiChoiceQuestion> mcqs;
 	
-	@OneToMany(mappedBy = "quiz")
+	@OneToMany(mappedBy = "quiz",fetch = FetchType.LAZY )
 	private List<AnswerKey> answers;
+	
+	@Nullable
+	private long languageId;
 	
 	public List<AnswerKey> getAnswers() {
 		return answers;
@@ -31,13 +35,16 @@ public class Quiz {
 	protected Quiz() {}
 
 
-	public Quiz(long id, String name, String level, List<MultiChoiceQuestion> mcqs, List<AnswerKey> answers) {
+
+	public Quiz(long id, String name, String level, List<MultiChoiceQuestion> mcqs, List<AnswerKey> answers,
+			long languageId) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.level = level;
 		this.mcqs = mcqs;
 		this.answers = answers;
+		this.languageId = languageId;
 	}
 	public long getId() {
 		return id;
@@ -69,6 +76,13 @@ public class Quiz {
 
 	public void setMcqs(List<MultiChoiceQuestion> mcqs) {
 		this.mcqs = mcqs;
+	}
+	
+	public long getLanguageId() {
+		return languageId;
+	}
+	public void setLanguageId(long languageId) {
+		this.languageId = languageId;
 	}
 	
 

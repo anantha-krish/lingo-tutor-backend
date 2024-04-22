@@ -22,7 +22,6 @@ import com.lingotutor.userservice.service.UserInfoService;
 import jakarta.validation.Valid;
 
 @RestController
-@CrossOrigin(origins = "*")
 @RequestMapping("/auth")
 public class AuthResource {
 
