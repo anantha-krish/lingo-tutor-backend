@@ -57,7 +57,7 @@ public class SecurityConfig {
 						"/auth/validate/**", "/auth/token", "/h2-console/**").permitAll())
 				.authorizeHttpRequests(auth -> auth.requestMatchers("/admin/**").authenticated())
 				.authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**").authenticated())
-				.authorizeHttpRequests(auth -> auth.requestMatchers("/user/**").authenticated())
+				.authorizeHttpRequests(auth -> auth.requestMatchers("/users/**").authenticated())
 				.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
 

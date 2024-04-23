@@ -48,9 +48,14 @@ public class LingoApiAuthFilter extends AbstractGatewayFilterFactory<LingoApiAut
 					token = token.substring(AUTH_PREFIX.length());
 				}
 				try {
-					// could you Auth Service, but validating JWT is faster & secure way
+					// could use Auth Service, but validating JWT is faster & secure way
 					jwtUtil.validateToken(token);
-					request = request.mutate().header("username", jwtUtil.extractUsername(token)).build();
+					var subjects = jwtUtil.extractUserIdAndUserName(token);
+					request = request
+							.mutate()
+							.header("userId", subjects[0])
+							.header("username", subjects[1])
+							.build();
 
 				} catch (Exception e) {
 					System.out.println("invalid access...!");

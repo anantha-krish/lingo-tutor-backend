@@ -39,8 +39,8 @@ public class LanguageResource {
 	private ArticleRepository articleRepo;
 	
 	@GetMapping("/user") 
-	public String helloUser(@RequestHeader("username") String userName) {
-		return "Hello "+ userName;
+	public String helloUser(@RequestHeader("username") String userName,@RequestHeader("userId") String userId) {
+		return "Hello "+ userName + userId;
 	}
 	
 	@GetMapping

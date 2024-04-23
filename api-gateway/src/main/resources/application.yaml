@@ -15,11 +15,20 @@ spring:
             
      # add microservice routes here
       routes:
+      
       - id: users
         uri: lb://users
         predicates:
-        - Path=/auth/**,/admin/**,/users/**
-      # No filters       
+        - Path=/auth/**
+        # No filters required
+        
+      - id: users
+        uri: lb://users
+        predicates:
+        - Path=/admin/**,/users/**
+        filters:
+        - LingoApiAuthFilter
+
         
       - id: languages
         uri: lb://languages

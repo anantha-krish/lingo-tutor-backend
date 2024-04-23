@@ -29,7 +29,7 @@ public class UserInfoService implements UserDetailsService {
 	private JwtService jwtService;
 
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	public UserInfoDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
 		Optional<UserInfo> userDetail = userRepo.findByUsername(username);
 
@@ -66,12 +66,13 @@ public class UserInfoService implements UserDetailsService {
 		return users.get();
 	}
 	
-	public String generateToken(String username) {
-		return jwtService.generateToken(username);
+	public String generateToken(long userId, String username) {
+		return jwtService.generateToken(userId, username);
 	}
 
 	public void validateToken(String token) {
 		jwtService.validateToken(token);
 	}
+
 
 }

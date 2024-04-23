@@ -37,14 +37,16 @@ public class LingoAuthFilter extends OncePerRequestFilter {
 		String token = "";
 		String username = "";
 
+
 		if (authHeader != null && authHeader.startsWith("Bearer ")) {
 			token = authHeader.substring(7);
 			// username will available if request is from API gateway
-			if (userNameHeader != null) {
+			if ( userNameHeader != null) {
 				username = userNameHeader;
 			} else {
 				// for request of standalone microservice
-				username = jwtService.extractUsername(token);
+				var subjects = jwtService.extractUserIdAndUserName(token);
+				username = subjects[1];
 			}
 		}
 

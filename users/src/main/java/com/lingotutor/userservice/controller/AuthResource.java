@@ -6,7 +6,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,7 +50,8 @@ public class AuthResource {
 				authRequest.getPassword());
 		Authentication authentication = authenticationManager.authenticate(token);
 		if (authentication.isAuthenticated()) {
-			return jwtService.generateToken(authRequest.getUsername());
+			var user = service.loadUserByUsername(authRequest.getUsername());
+			return jwtService.generateToken(user.getUserId(),user.getUsername());
 		} else {
 			throw new UsernameNotFoundException("invalid user request !");
 		}

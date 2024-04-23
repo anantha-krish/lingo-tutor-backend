@@ -15,11 +15,13 @@ public class UserInfoDetails implements UserDetails {
 	private static final long serialVersionUID = -3623932283680927252L;
 	private String username; 
 	private String password; 
+	private long userId;
 	private List<GrantedAuthority> authorities; 
 
 	public UserInfoDetails(UserInfo userInfo) { 
 		username = userInfo.getUsername(); 
 		password = userInfo.getPassword(); 
+		userId= userInfo.getId();
 		authorities = Arrays.stream(userInfo.getRoles().split(",")) 
 				.map(SimpleGrantedAuthority::new) 
 				.collect(Collectors.toList()); 
@@ -58,5 +60,13 @@ public class UserInfoDetails implements UserDetails {
 	@Override
 	public boolean isEnabled() { 
 		return true; 
+	}
+
+	public long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(long userId) {
+		this.userId = userId;
 	} 
 } 
