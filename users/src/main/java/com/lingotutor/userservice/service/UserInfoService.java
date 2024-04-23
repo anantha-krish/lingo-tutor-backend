@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -46,26 +45,36 @@ public class UserInfoService implements UserDetailsService {
 		return "User Added Successfully";
 	}
 
+	public UserInfo findUserById(Long userId) throws UsernameNotFoundException {
+		Optional<UserInfo> userInfo = userRepo.findById(userId);
+
+		if (userInfo.isEmpty()) {
+			new UsernameNotFoundException("User not found with id " + userId);
+		}
+
+		return userInfo.get();
+	}
+
 	public List<UserInfo> getAllUsers() {
-		
+
 		var users = userRepo.findAllByRolesContaining("ROLE_USER");
-		
-		if(users.isEmpty()) {
+
+		if (users.isEmpty()) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No users");
 		}
 		return users.get();
 	}
 
 	public List<UserInfo> getAllAdmins() {
-		
+
 		var users = userRepo.findAllByRolesContaining("ROLE_ADMIN");
-		
-		if(users.isEmpty()) {
+
+		if (users.isEmpty()) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No Admins");
 		}
 		return users.get();
 	}
-	
+
 	public String generateToken(long userId, String username) {
 		return jwtService.generateToken(userId, username);
 	}
@@ -73,6 +82,5 @@ public class UserInfoService implements UserDetailsService {
 	public void validateToken(String token) {
 		jwtService.validateToken(token);
 	}
-
 
 }

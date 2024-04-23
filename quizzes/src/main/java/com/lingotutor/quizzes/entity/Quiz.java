@@ -5,12 +5,15 @@ import java.util.List;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
 @Entity
 public class Quiz {
 	@Id
+	@GeneratedValue
 	private long id;
 	
 	private String name;
@@ -33,8 +36,6 @@ public class Quiz {
 		this.answers = answers;
 	}
 	protected Quiz() {}
-
-
 
 	public Quiz(long id, String name, String level, List<MultiChoiceQuestion> mcqs, List<AnswerKey> answers,
 			long languageId) {

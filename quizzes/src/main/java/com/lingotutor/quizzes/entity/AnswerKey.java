@@ -1,12 +1,8 @@
 package com.lingotutor.quizzes.entity;
 
-import org.springframework.data.annotation.AccessType;
-import org.springframework.data.annotation.AccessType.Type;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
