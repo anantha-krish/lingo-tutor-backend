@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,14 +18,18 @@ import com.lingotutor.userservice.dto.ArticleVisitReponse;
 import com.lingotutor.userservice.entity.ArticleVisits;
 import com.lingotutor.userservice.entity.UserInfo;
 import com.lingotutor.userservice.repository.ArticleVisitsRepository;
+import com.lingotutor.userservice.repository.QuizScoresRepository;
 import com.lingotutor.userservice.service.UserInfoService;
 
 @RestController
 @RequestMapping("/users")
-//@PreAuthorize("hasAuthority('ROLE_USER')") 
+@PreAuthorize("hasAuthority('ROLE_USER')") 
 public class UserResource {
 	@Autowired
 	ArticleVisitsRepository articleVisitsRepo;
+	
+	@Autowired
+	QuizScoresRepository quizScoresRepo;
 
 	@Autowired
 	UserInfoService userInfoService;
@@ -35,12 +40,19 @@ public class UserResource {
 	}
 
 	@GetMapping("/visits/articles")
-	public ResponseEntity<Object> saveVisitHistory(@RequestHeader("userId") Long userId) {
+	public ResponseEntity<Object> getAllVisitHistory(@RequestHeader("userId") Long userId) {
 		var user = userInfoService.findUserById(userId);
 		var list = articleVisitsRepo.findAllByUserInfoOrderByTimestampDesc(user);
 		List<ArticleVisitReponse> responseList = list.get().stream().map(x -> new ArticleVisitReponse(x)).toList();
 		return ResponseEntity.ok(responseList);
 	}
+	
+	
+	@GetMapping("/scores/languages")
+	public ResponseEntity<Object> getAllLanguageScores(@RequestHeader("userId") Long userId) {
+	 return ResponseEntity.ok(quizScoresRepo.findAll());
+	}
+	
 
 	@PostMapping("/visits/articles/{articleId}")
 	public ResponseEntity<Object> saveVisitHistory(@RequestHeader("userId") Long userId,

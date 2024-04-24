@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lingotutor.languageservice.bean.LanguageResponse;
@@ -21,8 +20,6 @@ import com.lingotutor.languageservice.proxy.QuizServiceProxy;
 import com.lingotutor.languageservice.repository.ArticleRepository;
 import com.lingotutor.languageservice.repository.LanguageRepository;
 import com.lingotutor.languageservice.repository.SectionRepository;
-
-import feign.Retryer;
 
 @RestController
 @RequestMapping("/languages")
@@ -62,6 +59,13 @@ public class LanguageResource {
 		
 		return ResponseEntity.ok(response);
 		
+	}
+	
+	@GetMapping("/{languageId}/quizzes/{quizId}/answers")
+	public  ResponseEntity<Object> getLanguageMcqsByQuizId(@PathVariable("languageId") Long languageId,@PathVariable("quizId") long quizId) {
+	var response =quizProxy.getAllAnswers(languageId, quizId).getBody();
+		
+	return ResponseEntity.ok(response);
 	}
 	
 	@GetMapping("/sections")

@@ -6,4 +6,5 @@ import com.lingotutor.languageservice.entity.Language;
 
 public interface LanguageRepository extends JpaRepository<Language, Long> {
 
+	
 }
