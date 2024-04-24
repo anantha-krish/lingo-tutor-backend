@@ -22,6 +22,8 @@ import com.lingotutor.languageservice.repository.ArticleRepository;
 import com.lingotutor.languageservice.repository.LanguageRepository;
 import com.lingotutor.languageservice.repository.SectionRepository;
 
+import feign.Retryer;
+
 @RestController
 @RequestMapping("/languages")
 public class LanguageResource {

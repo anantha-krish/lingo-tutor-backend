@@ -1,26 +1,23 @@
 package com.lingotutor.userservice.dto;
 
-import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import com.lingotutor.userservice.entity.ArticleVisits;
 
 public class ArticleVisitReponse {
-	
+
 	private Long userId;
-	
 	private Long articleId;
-	
-	private LocalDateTime timestamp;
-	
+	private String date;
 
 	public ArticleVisitReponse(ArticleVisits visit) {
 		super();
 		this.userId = visit.getUserInfo().getId();
 		this.articleId = visit.getArticleId();
-		this.timestamp = visit.getTimestamp();
+		this.date = visit.getTimestamp().format(DateTimeFormatter.ISO_LOCAL_DATE);
 	}
 
-	public long getUserInfo() {
+	public Long getUserId() {
 		return userId;
 	}
 
@@ -28,9 +25,8 @@ public class ArticleVisitReponse {
 		return articleId;
 	}
 
-	public LocalDateTime getTimestamp() {
-		return timestamp;
+	public String getDate() {
+		return date;
 	}
-	
-	
+
 }
