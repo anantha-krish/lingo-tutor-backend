@@ -9,15 +9,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lingotutor.quizzes.bean.QuestionAnswer;
 import com.lingotutor.quizzes.bean.QuizNameAndLevelBean;
+import com.lingotutor.quizzes.bean.UserQuizScoreRequest;
+import com.lingotutor.quizzes.proxy.UserServiceProxy;
 import com.lingotutor.quizzes.repo.QuizIdNameLevelAndAnswers;
 import com.lingotutor.quizzes.repo.QuizRepository;
-
 
 @RestController
 @RequestMapping("/quizzes")
@@ -25,6 +27,9 @@ public class QuizResource {
 
 	@Autowired
 	private QuizRepository quizRepo;
+
+	@Autowired
+	private UserServiceProxy userServiceProxy;
 
 	@GetMapping("/all")
 	public ResponseEntity<Object> getAllQuizzes() {
@@ -70,7 +75,8 @@ public class QuizResource {
 
 	@PostMapping("/{quizId}/answers/scores")
 	public ResponseEntity<Object> saveQuizScore(@RequestBody List<QuestionAnswer> submitReq,
-			@PathVariable(name = "quizId") Long quizId) {
+			@PathVariable(name = "quizId") Long quizId, @RequestHeader("userId") long userId) {
+		
 
 		var resp = quizRepo.findById(quizId).get().getAnswers();
 
@@ -82,17 +88,16 @@ public class QuizResource {
 			long currentMcqId = resp.get(i).getMcq();
 			long answerId = resp.get(i).getChoice();
 
-			Optional<QuestionAnswer> userSubmittedQA = submitReq.stream()
-					.filter(x -> x.getMcq() == currentMcqId).findFirst();
+			Optional<QuestionAnswer> userSubmittedQA = submitReq.stream().filter(x -> x.getMcq() == currentMcqId)
+					.findFirst();
 			if (userSubmittedQA.isPresent()) {
 				if (userSubmittedQA.get().getChoice() == answerId) {
 					score++;
 				}
 			}
-
 		}
 
-		return ResponseEntity.ok("score -> "+score +" out of "+maxScore);
+		return userServiceProxy.saveQuizScore(userId, new UserQuizScoreRequest(userId,quizId, score, maxScore));
 
 	}
 }

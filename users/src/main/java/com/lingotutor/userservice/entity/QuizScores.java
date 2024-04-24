@@ -26,11 +26,10 @@ public class QuizScores {
 	
 	private int maxScore;
 	
-	protected QuizScores() {}
+	public QuizScores() {}
 	
-	public QuizScores(long id, UserInfo userInfo, long quizId, double score, int maxScore) {
+	public QuizScores(UserInfo userInfo, long quizId, double score, int maxScore) {
 		super();
-		this.id = id;
 		this.userInfo=userInfo;
 		this.quizId = quizId;
 		this.score = score;
