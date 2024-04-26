@@ -1,6 +1,8 @@
 package com.lingotutor.userservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,7 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.lingotutor.userservice.dto.AuthRequest;
+import com.lingotutor.userservice.bean.AuthRequest;
+import com.lingotutor.userservice.bean.UserInfoResponse;
 import com.lingotutor.userservice.entity.UserInfo;
 import com.lingotutor.userservice.service.JwtService;
 import com.lingotutor.userservice.service.UserInfoService;
@@ -40,8 +43,9 @@ public class AuthResource {
 	}
 
 	@PostMapping("/register")
-	public String addNewUser(@Valid @RequestBody UserInfo userInfo) {
-		return service.addUser(userInfo);
+	public ResponseEntity<UserInfoResponse> addNewUser(@Valid @RequestBody UserInfo userInfo) {
+		//plan HATEOAS example here
+		return new ResponseEntity<UserInfoResponse>(service.addUser(userInfo),HttpStatus.CREATED);
 	}
 
 	@PostMapping("/token")

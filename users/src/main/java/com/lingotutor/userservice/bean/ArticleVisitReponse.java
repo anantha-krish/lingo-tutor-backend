@@ -1,4 +1,4 @@
-package com.lingotutor.userservice.dto;
+package com.lingotutor.userservice.bean;
 
 import java.time.format.DateTimeFormatter;
 

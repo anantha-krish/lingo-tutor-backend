@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lingotutor.userservice.bean.ArticleVisitReponse;
 import com.lingotutor.userservice.bean.UserQuizScoreRequest;
-import com.lingotutor.userservice.dto.ArticleVisitReponse;
 import com.lingotutor.userservice.entity.ArticleVisits;
 import com.lingotutor.userservice.entity.QuizScores;
 import com.lingotutor.userservice.entity.UserInfo;

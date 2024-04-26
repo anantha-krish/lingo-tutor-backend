@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.lingotutor.userservice.bean.UserInfoResponse;
 import com.lingotutor.userservice.config.UserInfoDetails;
 import com.lingotutor.userservice.entity.UserInfo;
 import com.lingotutor.userservice.repository.UserInfoRepository;
@@ -37,12 +38,12 @@ public class UserInfoService implements UserDetailsService {
 				.orElseThrow(() -> new UsernameNotFoundException("User not found " + username));
 	}
 
-	public String addUser(UserInfo userInfo) {
+	public UserInfoResponse addUser(UserInfo userInfo) {
 
 		userInfo.setPassword(encoder.encode(userInfo.getPassword()));
-		userRepo.save(userInfo);
+		
 
-		return "User Added Successfully";
+		return new UserInfoResponse(userRepo.save(userInfo));
 	}
 
 	public UserInfo findUserById(Long userId) throws UsernameNotFoundException {
