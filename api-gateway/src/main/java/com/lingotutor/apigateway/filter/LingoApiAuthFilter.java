@@ -4,12 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.lingotutor.apigateway.util.JwtUtil;
+
+import io.jsonwebtoken.JwtException;
 
 @Component
 public class LingoApiAuthFilter extends AbstractGatewayFilterFactory<LingoApiAuthFilter.Config> {
@@ -39,7 +39,7 @@ public class LingoApiAuthFilter extends AbstractGatewayFilterFactory<LingoApiAut
 
 			if (isSecuredApiRoute) {
 				if (!hasAuthHeader) {
-					throw new ResponseStatusException(HttpStatus.FORBIDDEN, "missing authorization header");
+					throw new JwtException("Token Not found");
 				}
 
 				String token = headers.get(HttpHeaders.AUTHORIZATION).get(0);
@@ -47,22 +47,13 @@ public class LingoApiAuthFilter extends AbstractGatewayFilterFactory<LingoApiAut
 				if (token != null && token.startsWith(AUTH_PREFIX)) {
 					token = token.substring(AUTH_PREFIX.length());
 				}
-				try {
-					// could use Auth Service, but validating JWT is faster & secure way
-					jwtUtil.validateToken(token);
-					var subjects = jwtUtil.extractUserIdAndUserName(token);
-					request = request
-							.mutate()
-							.header("userId", subjects[0])
-							.header("username", subjects[1])
-							.build();
 
-				} catch (Exception e) {
-					System.out.println("invalid access...!");
-					throw new ResponseStatusException(HttpStatus.FORBIDDEN, "un authorized access to application");
-				}
+				// could use Auth Service, but validating JWT is faster & secure way
+				jwtUtil.validateToken(token);
+				var subjects = jwtUtil.extractUserIdAndUserName(token);
+				request = request.mutate().header("userId", subjects[0]).header("username", subjects[1]).build();
+
 			}
-
 			return chain.filter(exchange.mutate().request(request).build());
 
 		});
