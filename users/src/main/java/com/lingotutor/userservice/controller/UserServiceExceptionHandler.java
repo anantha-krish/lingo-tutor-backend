@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -34,6 +35,10 @@ public class UserServiceExceptionHandler extends ResponseEntityExceptionHandler{
 		if(ex instanceof AccessDeniedException) {
 			status = HttpStatus.FORBIDDEN;
 			message = "You do not have enough rights to access the API";
+		}
+		if(ex instanceof BadCredentialsException) {
+			status = HttpStatus.UNAUTHORIZED;
+			message = "Invalid username or password";
 		}
 		
 		GenericError errorDetails = new GenericError(
