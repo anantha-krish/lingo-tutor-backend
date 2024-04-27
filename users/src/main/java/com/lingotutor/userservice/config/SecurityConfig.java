@@ -54,10 +54,10 @@ public class SecurityConfig {
 				.authenticationProvider(authenticationProvider())
 				.authorizeHttpRequests(requests -> requests.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll())
 				.authorizeHttpRequests(requests -> requests.requestMatchers("/auth/welcome", "/auth/register",
-						"/auth/validate/**", "/auth/token", "/h2-console/**","/users/scores/**").permitAll())
+						"/auth/validate/**", "/auth/token", "/h2-console/**","/user/scores/**").permitAll())
 				.authorizeHttpRequests(auth -> auth.requestMatchers("/admin/**").authenticated())
 				.authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**").authenticated())
-				.authorizeHttpRequests(auth -> auth.requestMatchers("/users/**").authenticated())
+				.authorizeHttpRequests(auth -> auth.requestMatchers("/user/**").authenticated())
 				.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
 

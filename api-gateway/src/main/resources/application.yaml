@@ -25,7 +25,7 @@ spring:
       - id: users
         uri: lb://users
         predicates:
-        - Path=/admin/**,/users/**
+        - Path=/admin/**,/user/**
         filters:
         - LingoApiAuthFilter
 

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lingotutor.userservice.bean.AuthRequest;
-import com.lingotutor.userservice.bean.UserInfoResponse;
+import com.lingotutor.userservice.bean.UserProfileResponse;
 import com.lingotutor.userservice.entity.UserInfo;
 import com.lingotutor.userservice.service.JwtService;
 import com.lingotutor.userservice.service.UserInfoService;
@@ -43,9 +43,9 @@ public class AuthResource {
 	}
 
 	@PostMapping("/register")
-	public ResponseEntity<UserInfoResponse> addNewUser(@Valid @RequestBody UserInfo userInfo) {
+	public ResponseEntity<UserProfileResponse> addNewUser(@Valid @RequestBody UserInfo userInfo) {
 		//plan HATEOAS example here
-		return new ResponseEntity<UserInfoResponse>(service.addUser(userInfo),HttpStatus.CREATED);
+		return new ResponseEntity<UserProfileResponse>(service.addUser(userInfo),HttpStatus.CREATED);
 	}
 
 	@PostMapping("/token")
