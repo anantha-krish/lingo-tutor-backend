@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lingotutor.languageservice.bean.ArticleResponse;
 import com.lingotutor.languageservice.bean.LanguageResponse;
 import com.lingotutor.languageservice.bean.Quiz;
 import com.lingotutor.languageservice.entity.Article;
@@ -24,56 +25,79 @@ import com.lingotutor.languageservice.repository.SectionRepository;
 @RestController
 @RequestMapping("/languages")
 public class LanguageResource {
-	
+
 	@Autowired
 	private QuizServiceProxy quizProxy;
 
 	@Autowired
 	private LanguageRepository langRepo;
-	
+
 	@Autowired
 	private SectionRepository sectionRepo;
-	
+
 	@Autowired
 	private ArticleRepository articleRepo;
-	
-	@GetMapping("/user") 
-	public String helloUser(@RequestHeader("username") String userName,@RequestHeader("userId") String userId) {
-		return "Hello "+ userName + userId;
+
+	@GetMapping("/user")
+	public String helloUser(@RequestHeader("username") String userName, @RequestHeader("userId") String userId) {
+		return "Hello " + userName + userId;
 	}
-	
+
 	@GetMapping
-	public  List<Language> getAllLanguages() {
+	public List<Language> getAllLanguages() {
 		return langRepo.findAll();
 	}
-	
+
 	@GetMapping("/{id}")
-	public  ResponseEntity<Object> getLanguageById(@PathVariable("id") Long id) {
+	public ResponseEntity<Object> getLanguageById(@PathVariable("id") Long id) {
 		Optional<Language> language = langRepo.findById(id);
-		if(language.isEmpty()) {
+		if (language.isEmpty()) {
 			return ResponseEntity.notFound().build();
 		}
-		
-		List<Quiz>quizzes=quizProxy.getQuizzesByLanguageId(id);
-		LanguageResponse response= new LanguageResponse(language.get(), quizzes);
-		
+
+		List<Quiz> quizzes = quizProxy.getQuizzesByLanguageId(id);
+		LanguageResponse response = new LanguageResponse(language.get(), quizzes);
+
 		return ResponseEntity.ok(response);
-		
+
 	}
-	
+
 	@GetMapping("/{languageId}/quizzes/{quizId}/answers")
-	public  ResponseEntity<Object> getLanguageMcqsByQuizId(@PathVariable("languageId") Long languageId,@PathVariable("quizId") long quizId) {
-	var response =quizProxy.getAllAnswers(languageId, quizId).getBody();
-		
-	return ResponseEntity.ok(response);
+	public ResponseEntity<Object> getLanguageMcqsByQuizId(@PathVariable("languageId") Long languageId,
+			@PathVariable("quizId") long quizId) {
+		var response = quizProxy.getAllAnswers(languageId, quizId).getBody();
+
+		return ResponseEntity.ok(response);
 	}
-	
+
 	@GetMapping("/sections")
-	public  List<Section> getAllSections() {
-		return sectionRepo.findAll();
+	public ResponseEntity<List<Section>> getAllSections() {
+		return ResponseEntity.ok(sectionRepo.findAll());
 	}
+
+	@GetMapping("/sections/{sectionId}")
+	public ResponseEntity<Object> getSectionById(@PathVariable("sectionId") Long sectionId) {
+		Optional<Section> section = sectionRepo.findById(sectionId);
+		if (section.isEmpty()) {
+			return ResponseEntity.notFound().build();
+		}
+
+		return ResponseEntity.ok(section.get());
+	}
+
 	@GetMapping("/articles")
-	public  List<Article> getAllArticles() {
-		return articleRepo.findAll();
+	public ResponseEntity<List<ArticleResponse>> getAllArticles() {
+		return ResponseEntity.ok(articleRepo.findAll().stream().map(article -> new ArticleResponse(article)).toList());
 	}
+
+	@GetMapping("/articles/{articleId}")
+	public ResponseEntity<Object> getArticleById(@PathVariable("articleId") Long articleId) {
+		Optional<Article> article = articleRepo.findById(articleId);
+		if (article.isEmpty()) {
+			return ResponseEntity.notFound().build();
+		}
+
+		return ResponseEntity.ok(new ArticleResponse(article.get()));
+	}
+
 }

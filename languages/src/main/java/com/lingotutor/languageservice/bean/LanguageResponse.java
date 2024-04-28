@@ -12,7 +12,7 @@ public class LanguageResponse {
 	private String name;
 
 
-	private List<Section> sections;
+	private List<SectionMenu> sections;
 	
 	private List<Quiz> quizzes;
 	
@@ -21,7 +21,7 @@ public class LanguageResponse {
 		super();
 		this.id = language.getId();
 		this.name = language.getName();
-		this.sections = language.getSections();
+		this.sections = language.getSections().stream().map(section -> new SectionMenu(section)).toList();
 		this.quizzes = quizzes;
 	}
 
@@ -41,14 +41,12 @@ public class LanguageResponse {
 		this.name = name;
 	}
 
-	public List<Section> getSections() {
+	public List<SectionMenu> getSections() {
 		return sections;
 	}
-
-	public void setSections(List<Section> sections) {
+	public void setSections(List<SectionMenu> sections) {
 		this.sections = sections;
 	}
-
 	public List<Quiz> getQuizzes() {
 		return quizzes;
 	}

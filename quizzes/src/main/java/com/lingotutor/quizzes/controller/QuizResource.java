@@ -15,9 +15,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lingotutor.quizzes.bean.QuestionAnswer;
+import com.lingotutor.quizzes.bean.QuizMcqsResponse;
 import com.lingotutor.quizzes.bean.QuizNameAndLevelBean;
 import com.lingotutor.quizzes.bean.UserQuizScoreRequest;
+import com.lingotutor.quizzes.entity.MultiChoiceQuestion;
 import com.lingotutor.quizzes.proxy.UserServiceProxy;
+import com.lingotutor.quizzes.repo.MultiChoiceQuestionId;
+import com.lingotutor.quizzes.repo.MultiChoiceQuestionRepository;
 import com.lingotutor.quizzes.repo.QuizIdNameLevelAndAnswers;
 import com.lingotutor.quizzes.repo.QuizRepository;
 
@@ -27,18 +31,22 @@ public class QuizResource {
 
 	@Autowired
 	private QuizRepository quizRepo;
+	
+	
+	@Autowired
+	private MultiChoiceQuestionRepository mcqRepo;
 
 	@Autowired
 	private UserServiceProxy userServiceProxy;
-
-	@GetMapping("/all")
-	public ResponseEntity<Object> getAllQuizzes() {
+	
+	
+	//No Mapping
+	private  ResponseEntity<Object> getAllQuizzes() {
 		return ResponseEntity.ok(quizRepo.findAll());
 	}
 
 	@GetMapping
-	public ResponseEntity<Object> getQuizzesByLanguageId(
-			@RequestParam(name = "languageId", required = false) Long languageId) {
+	public ResponseEntity<Object> getQuizzes(@RequestParam(name = "languageId", required = false) Long languageId) {
 		if (languageId == null) {
 			return getAllQuizzes();
 		}
@@ -49,12 +57,31 @@ public class QuizResource {
 		return ResponseEntity.ok(response);
 	}
 
+	@GetMapping("/{quizId}")
+	public ResponseEntity<Object> getQuizById(@PathVariable("quizId") Long quizId) {
+
+		Optional<List<MultiChoiceQuestionId>> quiz = mcqRepo.findAllByQuizId(quizId);
+
+		if (quiz.isEmpty()) {
+			return ResponseEntity.notFound().build();
+		}
+		QuizMcqsResponse response	= new QuizMcqsResponse(quiz.get().stream().map(x->x.getId()).toList());
+
+		return ResponseEntity.ok(response);
+
+	}
+	
+	@GetMapping("mcqs/{mcqId}")
+	public ResponseEntity<Object> getMcqByIdAndQuizId(@PathVariable("mcqId") Long mcqId) {
+		Optional<MultiChoiceQuestion> mcq = mcqRepo.findById(mcqId);
+		return ResponseEntity.ok(mcq.get());
+	}
+
 	@GetMapping("/answers")
 	public ResponseEntity<Object> getAllAnswers(@RequestParam(name = "languageId", required = false) Long languageId,
 			@RequestParam(name = "quizId", required = false) Long quizId) {
 		if (quizId != null) {
-			var resp = quizRepo.findById(quizId).get().getAnswers();
-			return ResponseEntity.ok(resp);
+			return getAllAnswersByQuizId(quizId);
 		} else if (languageId != null && quizId == null) {
 			List<QuizIdNameLevelAndAnswers> resp = quizRepo.findAllByLanguageId(languageId).get();
 			return ResponseEntity.ok(resp);
@@ -62,7 +89,7 @@ public class QuizResource {
 		return getAllQuizzes();
 
 	}
-
+	
 	@GetMapping("/{quizId}/answers")
 	public ResponseEntity<Object> getAllAnswersByQuizId(@PathVariable(name = "quizId", required = false) Long quizId) {
 		if (quizId != null) {
@@ -76,7 +103,6 @@ public class QuizResource {
 	@PostMapping("/{quizId}/answers/scores")
 	public ResponseEntity<Object> saveQuizScore(@RequestBody List<QuestionAnswer> submitReq,
 			@PathVariable(name = "quizId") Long quizId, @RequestHeader("userId") long userId) {
-		
 
 		var resp = quizRepo.findById(quizId).get().getAnswers();
 
@@ -97,7 +123,7 @@ public class QuizResource {
 			}
 		}
 
-		return userServiceProxy.saveQuizScore(userId, new UserQuizScoreRequest(userId,quizId, score, maxScore));
+		return userServiceProxy.saveQuizScore(userId, new UserQuizScoreRequest(userId, quizId, score, maxScore));
 
 	}
 }

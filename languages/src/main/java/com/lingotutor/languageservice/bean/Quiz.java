@@ -3,36 +3,15 @@ package com.lingotutor.languageservice.bean;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Quiz{
-	private long id;
-	
-	private String name;
+public class Quiz extends Menu{
 	
 	private String level;
 	
 	protected Quiz(){}
 
 	public Quiz(long id, String name, String level) {
-		super();
-		this.id = id;
-		this.name = name;
+		super(id,name);
 		this.level = level;
-	}
-
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public String getLevel() {

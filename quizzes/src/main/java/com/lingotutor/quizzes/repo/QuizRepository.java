@@ -11,6 +11,4 @@ import com.lingotutor.quizzes.entity.Quiz;
 public interface QuizRepository extends JpaRepository<Quiz, Long> {
 	
 	Optional<List<QuizIdNameLevelAndAnswers>> findAllByLanguageId(Long langId );
-
-
 }
