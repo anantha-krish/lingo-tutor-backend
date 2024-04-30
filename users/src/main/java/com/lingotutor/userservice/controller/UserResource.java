@@ -96,8 +96,18 @@ public class UserResource {
 	public ResponseEntity<Object> getAllLanguageScores(@RequestHeader("userId") Long userId) {
 		return ResponseEntity.ok(quizScoresRepo.findAll());
 	}
+	
+	@GetMapping("/scores/quizzes/{quizId}")
+	@PreAuthorize("hasAuthority('ROLE_USER')")
+	public ResponseEntity<Object> getQuizScores(@RequestHeader("userId") Long userId,@PathVariable("quizId") Long quizId) {
+		var attemptedQuiz = quizScoresRepo.findByQuizId(quizId);
+		if(attemptedQuiz.isEmpty()) {
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.ok(attemptedQuiz.get());
+	}
 
-	@PostMapping("/scores/languages")
+	@PostMapping("/scores/quizzes")
 	public ResponseEntity<Object> saveQuizScore(@RequestHeader("userId") Long userId,
 			@RequestBody UserQuizScoreRequest request) {
 		var user = userInfoService.findUserById(userId);

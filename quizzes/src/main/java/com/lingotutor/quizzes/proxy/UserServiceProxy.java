@@ -11,6 +11,6 @@ import com.lingotutor.quizzes.bean.UserQuizScoreRequest;
 @FeignClient(name = "users")
 public interface UserServiceProxy {
 	
-	@PostMapping("/user/scores/languages")
+	@PostMapping("/user/scores/quizzes")
 	public ResponseEntity<Object> saveQuizScore(@RequestHeader("userId") Long userId, @RequestBody UserQuizScoreRequest request);
 }
