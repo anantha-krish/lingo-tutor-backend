@@ -9,6 +9,8 @@ public class QuizNameAndLevelBean {
 	
 	private String level;
 	
+	private int maxScore;
+	
 	
 
 	public QuizNameAndLevelBean(QuizIdNameLevelAndAnswers obj) {
@@ -16,10 +18,19 @@ public class QuizNameAndLevelBean {
 		this.id = obj.getId();
 		this.name = obj.getName();
 		this.level = obj.getLevel();
+		this.maxScore= obj.getAnswers().size();//each mcq will have answer
 	}
 
 	public long getId() {
 		return id;
+	}
+
+	public int getMaxScore() {
+		return maxScore;
+	}
+
+	public void setMaxScore(int maxScore) {
+		this.maxScore = maxScore;
 	}
 
 	public void setId(long id) {

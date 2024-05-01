@@ -76,7 +76,7 @@ public class QuizResource {
 		Optional<MultiChoiceQuestion> mcq = mcqRepo.findById(mcqId);
 		return ResponseEntity.ok(mcq.get());
 	}
-
+/*
 	@GetMapping("/answers")
 	public ResponseEntity<Object> getAllAnswers(@RequestParam(name = "languageId", required = false) Long languageId,
 			@RequestParam(name = "quizId", required = false) Long quizId) {
@@ -89,7 +89,7 @@ public class QuizResource {
 		return getAllQuizzes();
 
 	}
-	
+	*/
 	@GetMapping("/{quizId}/answers")
 	public ResponseEntity<Object> getAllAnswersByQuizId(@PathVariable(name = "quizId", required = false) Long quizId) {
 		if (quizId != null) {

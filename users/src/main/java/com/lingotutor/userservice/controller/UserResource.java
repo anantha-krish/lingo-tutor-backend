@@ -111,7 +111,7 @@ public class UserResource {
 	public ResponseEntity<Object> getQuizScores(@RequestHeader("userId") Long userId,@PathVariable("quizId") Long quizId) {
 		var attemptedQuiz = quizScoresRepo.findByQuizId(quizId);
 		if(attemptedQuiz.isEmpty()) {
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.noContent().build();
 		}
 		return ResponseEntity.ok(attemptedQuiz.get());
 	}
