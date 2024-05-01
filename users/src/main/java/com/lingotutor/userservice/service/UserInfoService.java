@@ -3,7 +3,9 @@ package com.lingotutor.userservice.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.hibernate.query.spi.Limit;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -50,6 +52,7 @@ public class UserInfoService implements UserDetailsService {
 
 	public UserInfo findUserById(Long userId) throws UsernameNotFoundException {
 		Optional<UserInfo> userInfo = userRepo.findById(userId);
+	
 
 		if (userInfo.isEmpty()) {
 			new UsernameNotFoundException("User not found with id " + userId);

@@ -1,10 +1,14 @@
 package com.lingotutor.userservice.controller;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.management.modelmbean.RequiredModelMBean;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,9 +20,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.lingotutor.userservice.bean.ArticleVisitReponse;
+import com.lingotutor.userservice.bean.UserArticleVisitReponse;
 import com.lingotutor.userservice.bean.UserProfileRequest;
 import com.lingotutor.userservice.bean.UserProfileResponse;
 import com.lingotutor.userservice.bean.UserQuizScoreRequest;
@@ -83,11 +88,15 @@ public class UserResource {
 
 	@GetMapping("/visits/articles")
 	@PreAuthorize("hasAuthority('ROLE_USER')")
-	public ResponseEntity<Object> getAllVisitHistory(@RequestHeader("userId") Long userId) {
+	public ResponseEntity<Object> getAllVisitHistory(@RequestHeader("userId") Long userId,@RequestParam(name = "limit", required =false, defaultValue = "5") int limit,	
+			@RequestParam(name = "page", required =false, defaultValue = "0") int pageNumber ) {
 		var user = userInfoService.findUserById(userId);
-		var list = articleVisitsRepo.findAllByUserInfoOrderByTimestampDesc(user);
-		List<ArticleVisitReponse> responseList = list.get().stream().map(x -> new ArticleVisitReponse(x)).toList();
-		return ResponseEntity.ok(responseList);
+		List<ArticleVisits> responseList = new ArrayList<ArticleVisits>();
+		var list = articleVisitsRepo.findAllByUserInfoOrderByTimestampDesc(user, PageRequest.of(pageNumber, limit));
+		if(list.isPresent()) {
+			responseList = list.get();
+		}
+		return ResponseEntity.ok(new UserArticleVisitReponse(userId,responseList));
 	}
 
 
@@ -101,6 +110,17 @@ public class UserResource {
 	@PreAuthorize("hasAuthority('ROLE_USER')")
 	public ResponseEntity<Object> getQuizScores(@RequestHeader("userId") Long userId,@PathVariable("quizId") Long quizId) {
 		var attemptedQuiz = quizScoresRepo.findByQuizId(quizId);
+		if(attemptedQuiz.isEmpty()) {
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.ok(attemptedQuiz.get());
+	}
+	
+	@GetMapping("/scores/quizzes")
+	@PreAuthorize("hasAuthority('ROLE_USER')")
+	public ResponseEntity<Object> getQuizScores(@RequestHeader("userId") Long userId) {
+		var user = userInfoService.findUserById(userId);
+		var attemptedQuiz = quizScoresRepo.findAllByUserInfo(user);
 		if(attemptedQuiz.isEmpty()) {
 			return ResponseEntity.notFound().build();
 		}
@@ -127,7 +147,10 @@ public class UserResource {
 	@PostMapping("/visits/articles/{articleId}")
 	@PreAuthorize("hasAuthority('ROLE_USER')")
 	public ResponseEntity<Object> saveVisitHistory(@RequestHeader("userId") Long userId,
-			@PathVariable("articleId") Long articleId) {
+			@PathVariable("articleId") Long articleId
+			) {
+		
+		
 		UserInfo user = userInfoService.findUserById(userId);
 		Optional<ArticleVisits> prevVisit = articleVisitsRepo.findByArticleId(articleId);
 		ArticleVisits visitEntry = null;
@@ -140,8 +163,8 @@ public class UserResource {
 			visitEntry = new ArticleVisits(user, articleId);
 		}
 		var savedHistory = articleVisitsRepo.save(visitEntry);
-		ArticleVisitReponse response = new ArticleVisitReponse(savedHistory);
-		return ResponseEntity.ok(response);
+		
+		return getAllVisitHistory(userId,0,1);
 	}
 
 }

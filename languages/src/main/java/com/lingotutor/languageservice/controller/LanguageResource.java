@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lingotutor.languageservice.bean.ArticleResponse;
+import com.lingotutor.languageservice.bean.LanguageIdAndName;
 import com.lingotutor.languageservice.bean.LanguageResponse;
 import com.lingotutor.languageservice.bean.Quiz;
 import com.lingotutor.languageservice.entity.Article;
@@ -44,8 +45,8 @@ public class LanguageResource {
 	}
 
 	@GetMapping
-	public List<Language> getAllLanguages() {
-		return langRepo.findAll();
+	public ResponseEntity<List<LanguageIdAndName>> getAllLanguages() {
+		return ResponseEntity.ok(langRepo.findAll().stream().map(lang->new LanguageIdAndName(lang)).toList());
 	}
 
 	@GetMapping("/{id}")

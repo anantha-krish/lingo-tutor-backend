@@ -14,9 +14,11 @@ import jakarta.persistence.ManyToOne;
 public class ArticleVisits {
 	@Id
 	@GeneratedValue
+	@JsonIgnore
 	private long id;
 	
 	@ManyToOne
+	@JsonIgnore
 	private UserInfo userInfo;
 	
 	@Column(unique = true)
