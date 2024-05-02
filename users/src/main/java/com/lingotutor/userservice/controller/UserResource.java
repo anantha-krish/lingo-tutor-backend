@@ -147,10 +147,7 @@ public class UserResource {
 	@PostMapping("/visits/articles/{articleId}")
 	@PreAuthorize("hasAuthority('ROLE_USER')")
 	public ResponseEntity<Object> saveVisitHistory(@RequestHeader("userId") Long userId,
-			@PathVariable("articleId") Long articleId
-			) {
-		
-		
+			@PathVariable("articleId") Long articleId) {
 		UserInfo user = userInfoService.findUserById(userId);
 		Optional<ArticleVisits> prevVisit = articleVisitsRepo.findByArticleId(articleId);
 		ArticleVisits visitEntry = null;
@@ -164,7 +161,7 @@ public class UserResource {
 		}
 		var savedHistory = articleVisitsRepo.save(visitEntry);
 		
-		return getAllVisitHistory(userId,0,1);
+		return getAllVisitHistory(userId,1,1);
 	}
 
 }
