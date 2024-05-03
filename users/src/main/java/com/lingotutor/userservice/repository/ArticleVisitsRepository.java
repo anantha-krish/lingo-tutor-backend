@@ -13,5 +13,5 @@ import com.lingotutor.userservice.entity.UserInfo;
 @Repository
 public interface ArticleVisitsRepository extends JpaRepository<ArticleVisits, Long> { 
 	Optional<List<ArticleVisits>> findAllByUserInfoOrderByTimestampDesc(UserInfo userInfo, PageRequest pageRequest);
-	Optional<ArticleVisits> findByArticleId(long articleId);
+	Optional<ArticleVisits> findByUserInfoAndArticleId(UserInfo userInfo,long articleId);
 }

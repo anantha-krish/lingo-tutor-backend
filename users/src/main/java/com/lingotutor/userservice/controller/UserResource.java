@@ -149,7 +149,7 @@ public class UserResource {
 	public ResponseEntity<Object> saveVisitHistory(@RequestHeader("userId") Long userId,
 			@PathVariable("articleId") Long articleId) {
 		UserInfo user = userInfoService.findUserById(userId);
-		Optional<ArticleVisits> prevVisit = articleVisitsRepo.findByArticleId(articleId);
+		Optional<ArticleVisits> prevVisit = articleVisitsRepo.findByUserInfoAndArticleId(user,articleId);
 		ArticleVisits visitEntry = null;
 		// means article was previously visited
 		if (prevVisit.isPresent()) {
@@ -159,6 +159,7 @@ public class UserResource {
 		} else {
 			visitEntry = new ArticleVisits(user, articleId);
 		}
+		
 		var savedHistory = articleVisitsRepo.save(visitEntry);
 		
 		return getAllVisitHistory(userId,1,1);
