@@ -11,8 +11,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lingotutor.languageservice.bean.ArticleIdNameResponse;
 import com.lingotutor.languageservice.bean.ArticleResponse;
-import com.lingotutor.languageservice.bean.LanguageIdAndName;
+import com.lingotutor.languageservice.bean.IdAndName;
 import com.lingotutor.languageservice.bean.LanguageResponse;
 import com.lingotutor.languageservice.bean.Quiz;
 import com.lingotutor.languageservice.entity.Article;
@@ -45,8 +46,8 @@ public class LanguageResource {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<LanguageIdAndName>> getAllLanguages() {
-		return ResponseEntity.ok(langRepo.findAll().stream().map(lang->new LanguageIdAndName(lang)).toList());
+	public ResponseEntity<List<IdAndName>> getAllLanguages() {
+		return ResponseEntity.ok(langRepo.findAll().stream().map(lang->new IdAndName(lang)).toList());
 	}
 
 	@GetMapping("/{id}")
@@ -99,6 +100,16 @@ public class LanguageResource {
 		}
 
 		return ResponseEntity.ok(new ArticleResponse(article.get()));
+	}
+	
+	@GetMapping("/articles/{articleId}/info")
+	public ResponseEntity<Object> getArticleInfoById(@PathVariable("articleId") Long articleId) {
+		Optional<Article> article = articleRepo.findById(articleId);
+		if (article.isEmpty()) {
+			return ResponseEntity.notFound().build();
+		}
+
+		return ResponseEntity.ok(new ArticleIdNameResponse(article.get()));
 	}
 
 }
