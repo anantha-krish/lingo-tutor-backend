@@ -13,7 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lingotutor.userservice.bean.ArticleIdRequest;
 import com.lingotutor.userservice.bean.UserArticleVisitReponse;
 import com.lingotutor.userservice.bean.UserProfileRequest;
 import com.lingotutor.userservice.bean.UserProfileResponse;
@@ -60,7 +63,7 @@ public class UserResource {
 		return ResponseEntity.ok(response);
 	}
 	
-	@PutMapping("/profile")
+	@PatchMapping("/profile")
 	@PreAuthorize("hasAuthority('ROLE_USER')")
 	public ResponseEntity<UserProfileResponse> updateUserProfile(@RequestHeader("userId") Long userId,
 			@RequestBody UserProfileRequest userProfile) {
@@ -96,6 +99,7 @@ public class UserResource {
 		if(list.isPresent()) {
 			responseList = list.get();
 		}
+
 		return ResponseEntity.ok(new UserArticleVisitReponse(userId,responseList));
 	}
 
@@ -144,12 +148,12 @@ public class UserResource {
 		return ResponseEntity.ok(quizScoresRepo.save(entity));
 	}
 
-	@PostMapping("/visits/articles/{articleId}")
+	@PutMapping("/visits/articles")
 	@PreAuthorize("hasAuthority('ROLE_USER')")
 	public ResponseEntity<Object> saveVisitHistory(@RequestHeader("userId") Long userId,
-			@PathVariable("articleId") Long articleId) {
+			@RequestBody ArticleIdRequest req) {
 		UserInfo user = userInfoService.findUserById(userId);
-		Optional<ArticleVisits> prevVisit = articleVisitsRepo.findByUserInfoAndArticleId(user,articleId);
+		Optional<ArticleVisits> prevVisit = articleVisitsRepo.findByUserInfoAndArticleId(user,req.getArticleId());
 		ArticleVisits visitEntry = null;
 		// means article was previously visited
 		if (prevVisit.isPresent()) {
@@ -157,12 +161,27 @@ public class UserResource {
 			// update timestamp
 			visitEntry.setTimestamp(LocalDateTime.now());
 		} else {
-			visitEntry = new ArticleVisits(user, articleId);
+			visitEntry = new ArticleVisits(user, req.getArticleId());
 		}
 		
 		var savedHistory = articleVisitsRepo.save(visitEntry);
 		
-		return getAllVisitHistory(userId,1,1);
+		return getAllVisitHistory(userId,1,0);
+	}
+	
+	@DeleteMapping("/visits/articles/{articleId}")
+	@PreAuthorize("hasAuthority('ROLE_USER')")
+	public ResponseEntity<Object> deleteVisitHistory(@RequestHeader("userId") Long userId,
+			@PathVariable("articleId") Long articleId) {
+		UserInfo user = userInfoService.findUserById(userId);
+		Optional<ArticleVisits> prevVisit = articleVisitsRepo.findByUserInfoAndArticleId(user,articleId);
+
+		if (prevVisit.isPresent()) {
+			articleVisitsRepo.delete(prevVisit.get());
+			return ResponseEntity.noContent().build();
+		}
+		return ResponseEntity.notFound().build();
+		
 	}
 
 }

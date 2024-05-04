@@ -105,8 +105,9 @@ public class LanguageResource {
 	@GetMapping("/articles/{articleId}/info")
 	public ResponseEntity<Object> getArticleInfoById(@PathVariable("articleId") Long articleId) {
 		Optional<Article> article = articleRepo.findById(articleId);
+
 		if (article.isEmpty()) {
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.ok(new ArticleIdNameResponse(articleId));
 		}
 
 		return ResponseEntity.ok(new ArticleIdNameResponse(article.get()));
