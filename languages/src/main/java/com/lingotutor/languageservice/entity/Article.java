@@ -20,12 +20,13 @@ public class Article {
 	public void setSection(Section section) {
 		this.section = section;
 	}
-	@Column(length=100)
+	@Column(length=200)
 	private String mediaLink;
+	@Column(length=20)
 	private String mediaType;
-	@Column(length=100)
-	private String shortDescription;
 	@Column(length=1000)
+	private String shortDescription;
+	@Column(length=2000)
 	private String description;
 	
 	@ManyToOne

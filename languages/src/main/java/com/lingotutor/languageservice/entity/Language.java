@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 
 @Entity
 public class Language {
@@ -17,6 +18,7 @@ public class Language {
 	private String name;
 
 	@OneToMany(mappedBy = "language")
+	@OrderBy("id")
 	private List<Section> sections;
 
 	protected Language() {

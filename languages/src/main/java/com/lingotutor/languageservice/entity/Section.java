@@ -9,6 +9,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 
 @Entity
 public class Section {
@@ -18,6 +19,7 @@ public class Section {
 	private String name;
 	
 	@OneToMany(mappedBy = "section")
+	@OrderBy("id")
 	private List<Article> articles;
 	
 	@ManyToOne
