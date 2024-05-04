@@ -2,6 +2,7 @@ package com.lingotutor.languageservice.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
@@ -19,10 +20,12 @@ public class Article {
 	public void setSection(Section section) {
 		this.section = section;
 	}
-
+	@Column(length=100)
 	private String mediaLink;
 	private String mediaType;
+	@Column(length=100)
 	private String shortDescription;
+	@Column(length=1000)
 	private String description;
 	
 	@ManyToOne
