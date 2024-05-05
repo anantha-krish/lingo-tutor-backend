@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,6 +41,9 @@ public class LanguageResource {
 
 	@Autowired
 	private ArticleRepository articleRepo;
+	
+	@Autowired
+	Environment environment;
 
 
 	@GetMapping
@@ -91,7 +94,8 @@ public class LanguageResource {
 
 	@GetMapping("/articles")
 	public ResponseEntity<List<ArticleResponse>> getAllArticles() {
-		return ResponseEntity.ok(articleRepo.findAll().stream().map(article -> new ArticleResponse(article)).toList());
+		String port = environment.getProperty("local.server.port");
+		return ResponseEntity.ok(articleRepo.findAll().stream().map(article -> new ArticleResponse(article,port)).toList());
 	}
 
 	@GetMapping("/articles/{articleId}")
@@ -100,8 +104,9 @@ public class LanguageResource {
 		if (article.isEmpty()) {
 			return ResponseEntity.notFound().build();
 		}
-		
-		EntityModel<ArticleResponse> articleModel = EntityModel.of(new ArticleResponse(article.get()));
+		String port = environment.getProperty("local.server.port");
+
+		EntityModel<ArticleResponse> articleModel = EntityModel.of(new ArticleResponse(article.get(),port));
 		WebMvcLinkBuilder articleLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getAllArticles());
 		WebMvcLinkBuilder sectionLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getSectionById(article.get().getSection().getId()));
 		WebMvcLinkBuilder infoLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getArticleInfoById(article.get().getId()));
@@ -112,6 +117,7 @@ public class LanguageResource {
 		articleModel.add(sectionLink.withRel("section-articles"));
 		articleModel.add(infoLink.withRel("article-info"));
 		articleModel.add(link.withRel("all-languages"));
+	
 		return ResponseEntity.ok(articleModel);
 	}
 	
