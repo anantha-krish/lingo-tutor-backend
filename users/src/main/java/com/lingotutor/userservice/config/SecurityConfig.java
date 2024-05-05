@@ -54,7 +54,7 @@ public class SecurityConfig {
 				.authenticationProvider(authenticationProvider())
 				.authorizeHttpRequests(requests -> requests.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll())
 				.authorizeHttpRequests(requests -> requests.requestMatchers("/auth/welcome", "/auth/register",
-						"/auth/validate/**", "/auth/token", "/h2-console/**","/user/scores/**").permitAll())
+						"/auth/validate/**", "/auth/login","/swagger-ui/**","/v3/api-docs/**", "/h2-console/**","/user/scores/**").permitAll())
 				.authorizeHttpRequests(auth -> auth.requestMatchers("/admin/**").authenticated())
 				.authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**").authenticated())
 				.authorizeHttpRequests(auth -> auth.requestMatchers("/user/**").authenticated())

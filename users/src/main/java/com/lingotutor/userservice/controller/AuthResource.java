@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lingotutor.userservice.bean.AuthRequest;
+import com.lingotutor.userservice.bean.LoginResponse;
 import com.lingotutor.userservice.bean.UserProfileResponse;
 import com.lingotutor.userservice.entity.UserInfo;
 import com.lingotutor.userservice.service.JwtService;
@@ -36,11 +37,6 @@ public class AuthResource {
 	@Autowired
 	private AuthenticationManager authenticationManager;
 
-	@GetMapping("/welcome")
-   @PreAuthorize("hasAuthority('ROLE_ADMIN')") 
-	public String welcome() {
-		return "Welcome this endpoint is not secure";
-	}
 
 	@PostMapping("/register")
 	public ResponseEntity<UserProfileResponse> addNewUser(@Valid @RequestBody UserInfo userInfo) {
@@ -48,14 +44,16 @@ public class AuthResource {
 		return new ResponseEntity<UserProfileResponse>(service.addUser(userInfo),HttpStatus.CREATED);
 	}
 
-	@PostMapping("/token")
-	public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
+	@PostMapping("/login")
+	public Object authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
 		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(authRequest.getUsername(),
 				authRequest.getPassword());
 		Authentication authentication = authenticationManager.authenticate(token);
 		if (authentication.isAuthenticated()) {
 			var user = service.loadUserByUsername(authRequest.getUsername());
-			return jwtService.generateToken(user.getUserId(),user.getUsername());
+			var resp = new LoginResponse (jwtService.generateToken(user.getUserId(),user.getUsername()),user.getAuthorities());
+			return ResponseEntity.ok(resp);
+					
 		} else {
 			throw new UsernameNotFoundException("invalid user request !");
 		}
