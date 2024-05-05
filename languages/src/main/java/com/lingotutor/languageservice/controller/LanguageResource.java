@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,10 +42,6 @@ public class LanguageResource {
 	@Autowired
 	private ArticleRepository articleRepo;
 
-	@GetMapping("/user")
-	public String helloUser(@RequestHeader("username") String userName, @RequestHeader("userId") String userId) {
-		return "Hello " + userName + userId;
-	}
 
 	@GetMapping
 	public ResponseEntity<List<IdAndName>> getAllLanguages() {
@@ -52,16 +50,20 @@ public class LanguageResource {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Object> getLanguageById(@PathVariable("id") Long id) {
+	
 		Optional<Language> language = langRepo.findById(id);
 		if (language.isEmpty()) {
 			return ResponseEntity.notFound().build();
 		}
-
+		
 		List<Quiz> quizzes = quizProxy.getQuizzesByLanguageId(id);
 		LanguageResponse response = new LanguageResponse(language.get(), quizzes);
-
-		return ResponseEntity.ok(response);
-
+		//HATEOAS
+		EntityModel<LanguageResponse> languageModel = EntityModel.of(response);
+		WebMvcLinkBuilder link = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getAllLanguages());
+		languageModel.add(link.withRel("all-languages"));
+		return ResponseEntity.ok(languageModel);
+	
 	}
 
 	@GetMapping("/{languageId}/quizzes/{quizId}/answers")
@@ -98,8 +100,19 @@ public class LanguageResource {
 		if (article.isEmpty()) {
 			return ResponseEntity.notFound().build();
 		}
-
-		return ResponseEntity.ok(new ArticleResponse(article.get()));
+		
+		EntityModel<ArticleResponse> articleModel = EntityModel.of(new ArticleResponse(article.get()));
+		WebMvcLinkBuilder articleLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getAllArticles());
+		WebMvcLinkBuilder sectionLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getSectionById(article.get().getSection().getId()));
+		WebMvcLinkBuilder infoLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getArticleInfoById(article.get().getId()));
+		WebMvcLinkBuilder link = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getAllLanguages());
+		
+		
+		articleModel.add(articleLink.withRel("all-articles"));
+		articleModel.add(sectionLink.withRel("section-articles"));
+		articleModel.add(infoLink.withRel("article-info"));
+		articleModel.add(link.withRel("all-languages"));
+		return ResponseEntity.ok(articleModel);
 	}
 	
 	@GetMapping("/articles/{articleId}/info")
