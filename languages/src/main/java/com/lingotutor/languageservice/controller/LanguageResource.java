@@ -46,12 +46,12 @@ public class LanguageResource {
 	Environment environment;
 
 
-	@GetMapping
+	@GetMapping(produces = "application/json")
 	public ResponseEntity<List<IdAndName>> getAllLanguages() {
 		return ResponseEntity.ok(langRepo.findAll().stream().map(lang->new IdAndName(lang)).toList());
 	}
 
-	@GetMapping("/{id}")
+	@GetMapping(path = "/{id}",produces = "application/json")
 	public ResponseEntity<Object> getLanguageById(@PathVariable("id") Long id) {
 	
 		Optional<Language> language = langRepo.findById(id);
@@ -69,7 +69,7 @@ public class LanguageResource {
 	
 	}
 
-	@GetMapping("/{languageId}/quizzes/{quizId}/answers")
+	@GetMapping(path="/{languageId}/quizzes/{quizId}/answers",produces = "application/json")
 	public ResponseEntity<Object> getLanguageMcqsByQuizId(@PathVariable("languageId") Long languageId,
 			@PathVariable("quizId") long quizId) {
 		var response = quizProxy.getAllAnswers(languageId, quizId).getBody();
@@ -77,12 +77,12 @@ public class LanguageResource {
 		return ResponseEntity.ok(response);
 	}
 
-	@GetMapping("/sections")
+	@GetMapping(path="/sections",produces = "application/json")
 	public ResponseEntity<List<Section>> getAllSections() {
 		return ResponseEntity.ok(sectionRepo.findAll());
 	}
 
-	@GetMapping("/sections/{sectionId}")
+	@GetMapping(path="/sections/{sectionId}",produces = "application/json")
 	public ResponseEntity<Object> getSectionById(@PathVariable("sectionId") Long sectionId) {
 		Optional<Section> section = sectionRepo.findById(sectionId);
 		if (section.isEmpty()) {
@@ -92,13 +92,13 @@ public class LanguageResource {
 		return ResponseEntity.ok(section.get());
 	}
 
-	@GetMapping("/articles")
+	@GetMapping(path="/articles",produces = "application/json")
 	public ResponseEntity<List<ArticleResponse>> getAllArticles() {
 		String port = environment.getProperty("local.server.port");
 		return ResponseEntity.ok(articleRepo.findAll().stream().map(article -> new ArticleResponse(article,port)).toList());
 	}
 
-	@GetMapping("/articles/{articleId}")
+	@GetMapping(path="/articles/{articleId}",produces = "application/json")
 	public ResponseEntity<Object> getArticleById(@PathVariable("articleId") Long articleId) {
 		Optional<Article> article = articleRepo.findById(articleId);
 		if (article.isEmpty()) {
@@ -121,7 +121,7 @@ public class LanguageResource {
 		return ResponseEntity.ok(articleModel);
 	}
 	
-	@GetMapping("/articles/{articleId}/info")
+	@GetMapping(path="/articles/{articleId}/info",produces = "application/json")
 	public ResponseEntity<Object> getArticleInfoById(@PathVariable("articleId") Long articleId) {
 		Optional<Article> article = articleRepo.findById(articleId);
 

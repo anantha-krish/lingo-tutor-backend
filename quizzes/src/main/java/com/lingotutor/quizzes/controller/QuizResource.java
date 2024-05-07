@@ -40,12 +40,11 @@ public class QuizResource {
 	private UserServiceProxy userServiceProxy;
 	
 	
-	//No Mapping
 	private  ResponseEntity<Object> getAllQuizzes() {
 		return ResponseEntity.ok(quizRepo.findAll());
 	}
 
-	@GetMapping
+	@GetMapping(produces = "application/json")
 	public ResponseEntity<Object> getQuizzes(@RequestParam(name = "languageId", required = false) Long languageId) {
 		if (languageId == null) {
 			return getAllQuizzes();
@@ -57,7 +56,7 @@ public class QuizResource {
 		return ResponseEntity.ok(response);
 	}
 
-	@GetMapping("/{quizId}")
+	@GetMapping(path="/{quizId}",produces = "application/json")
 	public ResponseEntity<Object> getQuizById(@PathVariable("quizId") Long quizId) {
 
 		Optional<List<MultiChoiceQuestionId>> quiz = mcqRepo.findAllByQuizId(quizId);
@@ -71,26 +70,13 @@ public class QuizResource {
 
 	}
 	
-	@GetMapping("mcqs/{mcqId}")
+	@GetMapping(path="mcqs/{mcqId}",produces = "application/json")
 	public ResponseEntity<Object> getMcqByIdAndQuizId(@PathVariable("mcqId") Long mcqId) {
 		Optional<MultiChoiceQuestion> mcq = mcqRepo.findById(mcqId);
 		return ResponseEntity.ok(mcq.get());
 	}
-/*
-	@GetMapping("/answers")
-	public ResponseEntity<Object> getAllAnswers(@RequestParam(name = "languageId", required = false) Long languageId,
-			@RequestParam(name = "quizId", required = false) Long quizId) {
-		if (quizId != null) {
-			return getAllAnswersByQuizId(quizId);
-		} else if (languageId != null && quizId == null) {
-			List<QuizIdNameLevelAndAnswers> resp = quizRepo.findAllByLanguageId(languageId).get();
-			return ResponseEntity.ok(resp);
-		}
-		return getAllQuizzes();
 
-	}
-	*/
-	@GetMapping("/{quizId}/answers")
+	@GetMapping(path="/{quizId}/answers",produces = "application/json")
 	public ResponseEntity<Object> getAllAnswersByQuizId(@PathVariable(name = "quizId", required = false) Long quizId) {
 		if (quizId != null) {
 			var resp = quizRepo.findById(quizId).get().getAnswers();
@@ -100,7 +86,7 @@ public class QuizResource {
 
 	}
 
-	@PostMapping("/{quizId}/answers/scores")
+	@PostMapping(path="/{quizId}/answers/scores",consumes = "application/json",produces = "application/json")
 	public ResponseEntity<Object> saveQuizScore(@RequestBody List<QuestionAnswer> submitReq,
 			@PathVariable(name = "quizId") Long quizId, @RequestHeader("userId") long userId) {
 

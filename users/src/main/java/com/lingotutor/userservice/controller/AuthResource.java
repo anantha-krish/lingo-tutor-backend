@@ -39,12 +39,12 @@ public class AuthResource {
 	private AuthenticationManager authenticationManager;
 
 
-	@PostMapping("/register")
+	@PostMapping(path="/register",consumes = "application/json",produces = "application/json")
 	public ResponseEntity<UserProfileResponse> addNewUser(@Valid @RequestBody UserInfo userInfo) {
 		return new ResponseEntity<UserProfileResponse>(service.addUser(userInfo),HttpStatus.CREATED);
 	}
 
-	@PostMapping("/login")
+	@PostMapping(path="/login",consumes = "application/json",produces = "application/json")
 	public Object authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
 		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(authRequest.getUsername(),
 				authRequest.getPassword());
@@ -59,7 +59,7 @@ public class AuthResource {
 		}
 	}
 
-	@GetMapping("/validate")
+	@GetMapping(path="/validate",produces = "application/json")
 	public ResponseEntity<MessageResponse> validateToken(@RequestParam("token") String token) {
 		service.validateToken(token);
 		return ResponseEntity.ok(new MessageResponse("Your token is valid"));

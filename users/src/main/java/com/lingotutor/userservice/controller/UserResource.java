@@ -50,7 +50,7 @@ public class UserResource {
 	@Autowired
 	UserInfoService userInfoService;
 
-	@GetMapping("/profile")
+	@GetMapping(path="/profile",produces = "application/json")
 	@PreAuthorize("hasAuthority('ROLE_USER')")
 	public ResponseEntity<UserProfileResponse> getUserProfile(@RequestHeader("username") String username,
 			@RequestHeader("userId") Long userId) {
@@ -63,7 +63,7 @@ public class UserResource {
 		return ResponseEntity.ok(response);
 	}
 	
-	@PatchMapping("/profile")
+	@PatchMapping(path="/profile",consumes = "application/json",produces = "application/json")
 	@PreAuthorize("hasAuthority('ROLE_USER')")
 	public ResponseEntity<UserProfileResponse> updateUserProfile(@RequestHeader("userId") Long userId,
 			@RequestBody UserProfileRequest userProfile) {
@@ -89,7 +89,7 @@ public class UserResource {
 	}
 
 
-	@GetMapping("/visits/articles")
+	@GetMapping(path="/visits/articles",produces = "application/json")
 	@PreAuthorize("hasAuthority('ROLE_USER')")
 	public ResponseEntity<Object> getAllVisitHistory(@RequestHeader("userId") Long userId,@RequestParam(name = "limit", required =false, defaultValue = "5") int limit,	
 			@RequestParam(name = "page", required =false, defaultValue = "0") int pageNumber ) {
@@ -104,13 +104,13 @@ public class UserResource {
 	}
 
 
-	@GetMapping("/scores/languages")
+	@GetMapping(path="/scores/languages",produces = "application/json")
 	@PreAuthorize("hasAuthority('ROLE_USER')")
 	public ResponseEntity<Object> getAllLanguageScores(@RequestHeader("userId") Long userId) {
 		return ResponseEntity.ok(quizScoresRepo.findAll());
 	}
 	
-	@GetMapping("/scores/quizzes/{quizId}")
+	@GetMapping(path="/scores/quizzes/{quizId}",produces = "application/json")
 	@PreAuthorize("hasAuthority('ROLE_USER')")
 	public ResponseEntity<Object> getQuizScores(@RequestHeader("userId") Long userId,@PathVariable("quizId") Long quizId) {
 		var attemptedQuiz = quizScoresRepo.findByQuizId(quizId);
@@ -120,7 +120,7 @@ public class UserResource {
 		return ResponseEntity.ok(attemptedQuiz.get());
 	}
 	
-	@GetMapping("/scores/quizzes")
+	@GetMapping(path="/scores/quizzes",produces = "application/json")
 	@PreAuthorize("hasAuthority('ROLE_USER')")
 	public ResponseEntity<Object> getQuizScores(@RequestHeader("userId") Long userId) {
 		var user = userInfoService.findUserById(userId);
@@ -131,7 +131,7 @@ public class UserResource {
 		return ResponseEntity.ok(attemptedQuiz.get());
 	}
 
-	@PostMapping("/scores/quizzes")
+	@PostMapping(path="/scores/quizzes",consumes = "application/json",produces = "application/json")
 	public ResponseEntity<Object> saveQuizScore(@RequestHeader("userId") Long userId,
 			@RequestBody UserQuizScoreRequest request) {
 		var user = userInfoService.findUserById(userId);
@@ -148,7 +148,7 @@ public class UserResource {
 		return ResponseEntity.ok(quizScoresRepo.save(entity));
 	}
 
-	@PutMapping("/visits/articles")
+	@PutMapping(path="/visits/articles",consumes = "application/json",produces = "application/json")
 	@PreAuthorize("hasAuthority('ROLE_USER')")
 	public ResponseEntity<Object> saveVisitHistory(@RequestHeader("userId") Long userId,
 			@RequestBody ArticleIdRequest req) {
