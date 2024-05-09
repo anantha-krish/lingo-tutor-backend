@@ -104,7 +104,7 @@ public class UserInfo {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	@JsonIgnore
+
 	public String getPassword() {
 		return password;
 	}
