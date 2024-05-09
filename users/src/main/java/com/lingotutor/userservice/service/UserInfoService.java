@@ -3,9 +3,7 @@ package com.lingotutor.userservice.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.hibernate.query.spi.Limit;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

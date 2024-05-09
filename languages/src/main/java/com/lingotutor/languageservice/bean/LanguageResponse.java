@@ -3,7 +3,6 @@ package com.lingotutor.languageservice.bean;
 import java.util.List;
 
 import com.lingotutor.languageservice.entity.Language;
-import com.lingotutor.languageservice.entity.Section;
 
 public class LanguageResponse {
 

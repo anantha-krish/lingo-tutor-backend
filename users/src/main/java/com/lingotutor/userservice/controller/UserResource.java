@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.management.modelmbean.RequiredModelMBean;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -164,7 +162,7 @@ public class UserResource {
 			visitEntry = new ArticleVisits(user, req.getArticleId());
 		}
 		
-		var savedHistory = articleVisitsRepo.save(visitEntry);
+		articleVisitsRepo.save(visitEntry);
 		
 		return getAllVisitHistory(userId,1,0);
 	}
