@@ -18,6 +18,18 @@
   <li><b>Database</b>: Three Free-tier Postgres Databases hosted in Cloud Platform (https://neon.tech/)</li>
 </ul>
 
+## How to run app ?
+
+1. Prerequisite: System should have `Java 21` and `Gradle 8.7` installed.
+
+1. Checkout the project.
+   
+3. Execute `gradle --refresh-dependencies` on each gradle project folders to download the dependancies.
+
+4. Execute `gradle bootrun` to run the project. 
+   
+Further refernce: https://docs.spring.io/spring-boot/docs/1.5.16.RELEASE/reference/html/using-boot-running-your-application.html
+
 ## Architecture Design
 
 ![Lingo Tutor  drawio (3)](https://github.com/anantha-krish/lingo-tutor-backend/assets/22259160/99244e7b-32ed-47cf-bd79-d59b5b026225)
