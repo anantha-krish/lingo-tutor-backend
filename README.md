@@ -5,6 +5,8 @@
 
 720p: https://drive.google.com/file/d/1sS_Jgq6VfLGUop12L-_GEk2I2IWFWGIB/view
 
+#### For Lingo Tutor Client Setup refer: https://github.com/anantha-krish/lingo-tutor-frontend
+
 ## Tech stack used
 
 
